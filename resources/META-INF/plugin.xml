@@ -1,0 +1,32 @@
+<idea-plugin>
+    <id>org.MGA</id>
+    <name>MGA</name>
+    <version>1.0</version>
+    <vendor email="m18810960119@163.com" url="http://www.MGA.org">MGA</vendor>
+
+    <description><![CDATA[
+            Automatically generate annotations for your methods.
+        ]]>
+    </description>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <action id="org.MGA.GeneAnno" class="org.MGA.GeneAnno" text="geneAnno"
+                description="generate annotations for your method">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+        </action>
+    </actions>
+
+</idea-plugin>
