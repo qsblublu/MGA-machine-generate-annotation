@@ -1,9 +1,10 @@
-package org.MGA;
+package org;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.*;
 import com.intellij.openapi.project.Project;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +17,7 @@ public class GeneAnno extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent event) {
+
         //Get all the required data from data keys
         Project project = event.getData(PlatformDataKeys.PROJECT);
         Editor editor = event.getData(PlatformDataKeys.EDITOR);
@@ -35,7 +37,7 @@ public class GeneAnno extends AnAction {
         int preLineStartOffset = start - document.getLineStartOffset(curLineNumber);
 
         //Get the insert position of generated annotation
-        int insertOffset = start ;
+        int insertOffset = start;
 
         //The operation of doc must be thrown in Runnable api and handled within a new thread in IDEA
         Runnable runnable = new Runnable() {
@@ -50,7 +52,8 @@ public class GeneAnno extends AnAction {
 
     /**
      * Make action visible and available only when existing project and editor and some text in the editor
-     *     is selected.
+     * is selected.
+     *
      * @param event
      */
     @Override
@@ -65,15 +68,21 @@ public class GeneAnno extends AnAction {
 
     /**
      * Get the annotation of method codes by calling python script.
+     *
      * @param code
      * @return
      */
     public String geneAnno(String code, int offset) {
         //annotation contains the returned annotation of code
         String annotation = null;
+        String dir = null;
 
         try {
-            String[] args = new String[] {"python", "D:\\code\\java\\MGA\\lib\\geneAnno.py", code};
+            dir = new File
+        }
+
+        try {
+            String[] args = new String[]{"python", dir + "\\lib\\geneAnno.py", code};
             Process process = Runtime.getRuntime().exec(args);
             //Get the output of python file with 'print' method
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
