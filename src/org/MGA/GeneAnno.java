@@ -17,30 +17,25 @@ public class GeneAnno extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent event) {
         //Get all the required data from data keys
-        final Project project = event.getData(PlatformDataKeys.PROJECT);
-        final Editor editor = event.getData(PlatformDataKeys.EDITOR);
+        Project project = event.getData(PlatformDataKeys.PROJECT);
+        Editor editor = event.getData(PlatformDataKeys.EDITOR);
 
         //Document represents the file text selected by user
-        final Document document = editor.getDocument();
-        final SelectionModel selectionModel = editor.getSelectionModel();
+        Document document = editor.getDocument();
+        SelectionModel selectionModel = editor.getSelectionModel();
 
-        //Get the start and end position of the selection
-        final int start = selectionModel.getSelectionStart();
-        //final int end = selectionModel.getSelectionEnd();
+        //Get the start position of the selection in the whole editor
+        int start = selectionModel.getSelectionStart();
 
         //Get the text selected by user
         String selectedText = selectionModel.getSelectedText();
 
-        //Get the max offset of the generated annotation
-        int maxOffset = document.getTextLength() - 1;
-
-        //Get the line number of selected text
+        //Get the line number that the start offset exists
         int curLineNumber = document.getLineNumber(start);
         int preLineStartOffset = start - document.getLineStartOffset(curLineNumber);
 
         //Get the insert position of generated annotation
-       // int insertOffset = maxOffset > preLineStartOffset ? preLineStartOffset : maxOffset;
-        int insertOffset =  start ;
+        int insertOffset = start ;
 
         //The operation of doc must be thrown in Runnable api and handled within a new thread in IDEA
         Runnable runnable = new Runnable() {
@@ -61,7 +56,6 @@ public class GeneAnno extends AnAction {
     @Override
     public void update(AnActionEvent event) {
         //Get required data keys
-        //final Project project = event.getProject();
         final Editor editor = event.getData(PlatformDataKeys.EDITOR);
         final SelectionModel selectionModel = editor.getSelectionModel();
 
@@ -76,10 +70,10 @@ public class GeneAnno extends AnAction {
      */
     public String geneAnno(String code, int offset) {
         //annotation contains the returned annotation of code
-        String annotation = "fuck\n";
+        String annotation = null;
 
         try {
-            String[] args = new String[] {"python", "lib\\geneAnno.py", code};
+            String[] args = new String[] {"python", "D:\\code\\java\\MGA\\lib\\geneAnno.py", code};
             Process process = Runtime.getRuntime().exec(args);
             //Get the output of python file with 'print' method
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -92,10 +86,32 @@ public class GeneAnno extends AnAction {
             e.printStackTrace();
         }
 
-        for (int i = 0;i < offset;i ++ ) {
-            annotation = annotation + ' ';
-        }
+        annotation = formatAnno(annotation, offset);
 
         return annotation;
+    }
+
+    public String formatAnno(String annotation, int offset) {
+        String[] annotations = annotation.split("\\.");
+        String formatAnno = "/**\n";
+        formatAnno += addSpace(offset);
+
+        for (int i = 0; i < annotations.length; i++) {
+            formatAnno += " * " + annotations[i].trim() + ".\n";
+            formatAnno += addSpace(offset);
+        }
+        formatAnno += " */\n";
+        formatAnno += addSpace(offset);
+
+        return formatAnno;
+    }
+
+    public String addSpace(int spaceNum) {
+        StringBuilder spaces = new StringBuilder();
+        for (int i = 0; i < spaceNum; i++) {
+            spaces.append(" ");
+        }
+
+        return spaces.toString();
     }
 }
